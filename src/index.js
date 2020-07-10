@@ -74,9 +74,11 @@ class Map extends React.Component {
     }
 }
 
+// WalkForm Component - handles form for configuring the walk
 class WalkForm extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             value: ''
         };
@@ -85,12 +87,14 @@ class WalkForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // sets value to whatever is in the textbox
     handleChange(event) {
         this.setState({
             value: event.target.value
         });
     }
 
+    // handles submit of form
     handleSubmit(event) {
         alert('Location: ' + this.state.value);
         event.preventDefault();
