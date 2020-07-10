@@ -5,7 +5,16 @@ import mapboxgl from 'mapbox-gl';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibGF1cmVuYWgiLCJhIjoiY2tjZW5oMjF2MGExejMzcWtkYnFyeHI1MyJ9.5lpcvu4s0ArEKQlnhtbxnA';
 
+// Application Component - App base
 class Application extends React.Component {
+    render() {
+        return (
+            <Map />
+        )
+    }
+}
+
+class Map extends React.Component {
     constructor(props) {
         super(props);
         // starting long/lat and zoom
@@ -31,15 +40,14 @@ class Application extends React.Component {
             // and set the state's variables to those values
             navigator.geolocation.getCurrentPosition((position) => {
                 this.setState({
-                    lng: position.coords.longitude,
-                    lat: position.coords.latitude,
+                    lng: position.coords.longitude.toFixed(4),
+                    lat: position.coords.latitude.toFixed(4),
                     zoom: this.state.zoom
                 });
 
-                map.center = [this.state.lng, this.state.lat];
-                console.log(map.center);
+               var center = new mapboxgl.LngLat(this.state.lng, this.state.lat);
+               map.setCenter(center);
             });
-            
         } else {
             console.log("location unavailable");
         }
