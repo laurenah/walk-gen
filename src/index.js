@@ -65,11 +65,48 @@ class Map extends React.Component {
     render() {
         return (
             <div>
-                <div  className="latlngBox">
-                    <div>Longitude: {this.state.lng} | Latitude: {this.state.lat}</div>
+                <div className='formWrapper'>
+                    <WalkForm />
                 </div>
                 <div ref={el => this.mapContainer = el} className="mapContainer" />
             </div>
+        )
+    }
+}
+
+class WalkForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: ''
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({
+            value: event.target.value
+        });
+    }
+
+    handleSubmit(event) {
+        alert('Location: ' + this.state.value);
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div className='form-group row'>
+                    <label for='inputStart' className='col-2 col-lg-2 walkFormLabel'>Start</label>
+                    <div className='col-8 col-lg-8 walkFormInput'>
+                        <input type='text' value={this.state.value} onChange={this.handleChange} />
+                    </div>
+                    <input type='submit' value="Submit"/>
+                </div>
+            </form>
         )
     }
 }

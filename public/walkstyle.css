@@ -4,17 +4,30 @@
     right: 0;
     left: 0;
     bottom: 0;
+    z-index: -1;
 }
 
-.latlngBox {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 12px;
-    background-color: #404040;
-    color: #ffffff;
-    z-index: 1 !important;
-    padding: 6px;
-    font-weight: bold;
+.formWrapper {
+    margin: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.walkFormLabel {
+    text-align: right;
+}
+
+.walkFormInput input {
+    width: 100%;
+}
+
+.walkFormInput input textarea {
+    opacity: 1;
+}
+
+@media screen and (min-width: 1000px) {
+    .formWrapper {
+        width: 500px;
     }
+}
