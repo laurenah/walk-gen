@@ -104,7 +104,7 @@ class WalkForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className='form-group row'>
-                    <label for='inputStart' className='col-2 col-lg-2 walkFormLabel'>Start</label>
+                    <label htmlFor='inputStart' className='col-2 col-lg-2 walkFormLabel'>Start</label>
                     <div className='col-8 col-lg-8 walkFormInput'>
                         <input type='text' value={this.state.value} onChange={this.handleChange} />
                     </div>
