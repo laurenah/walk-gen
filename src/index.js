@@ -2,8 +2,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
+import config from './mapbox-key';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoibGF1cmVuYWgiLCJhIjoiY2tjZW5oMjF2MGExejMzcWtkYnFyeHI1MyJ9.5lpcvu4s0ArEKQlnhtbxnA';
+mapboxgl.accessToken = config;
 
 // Application Component - App base
 class Application extends React.Component {
@@ -14,6 +15,7 @@ class Application extends React.Component {
     }
 }
 
+// Map Component - Draws Map
 class Map extends React.Component {
     constructor(props) {
         super(props);
