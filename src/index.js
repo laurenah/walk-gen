@@ -3,11 +3,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import config from './mapbox-key';
+import {process, convertToCoords} from './route-processor';
 
+// API Key
 mapboxgl.accessToken = config;
+
+// MapMatching API Path
+//const matchPath = 'https://api.mapbox.com/maching/v5/mapbox/walking/';
+var distance = 3000; // meters to make route ?
 
 // Application Component - App base
 class Application extends React.Component {
+
     render() {
         return (
             <Map />
@@ -64,11 +71,12 @@ class Map extends React.Component {
         });
     }
 
+    // variables passed into WalkForm are accessed as props
     render() {
         return (
             <div>
                 <div className='formWrapper'>
-                    <WalkForm />
+                    <WalkForm lat = {this.state.lat} lng = {this.state.lng} /> 
                 </div>
                 <div ref={el => this.mapContainer = el} className="mapContainer" />
             </div>
@@ -82,7 +90,8 @@ class WalkForm extends React.Component {
         super(props);
 
         this.state = {
-            value: ''
+            startValue: '',
+            endValue: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -92,13 +101,19 @@ class WalkForm extends React.Component {
     // sets value to whatever is in the textbox
     handleChange(event) {
         this.setState({
-            value: event.target.value
+            startValue: event.target.startValue,
+            endValue: event.target.endValue
         });
     }
 
     // handles submit of form
     handleSubmit(event) {
-        alert('Location: ' + this.state.value);
+        console.log('Start: ' + this.state.startValue + ", End: " + this.state.endValue);
+
+        let routeLegs = process(distance); // get splits
+        routeLegs = convertToCoords(this.props.lat, this.props.lng, routeLegs);
+        console.log(routeLegs);
+
         event.preventDefault();
     }
 
@@ -108,10 +123,16 @@ class WalkForm extends React.Component {
                 <div className='form-group row'>
                     <label htmlFor='inputStart' className='col-2 col-lg-2 walkFormLabel'>Start</label>
                     <div className='col-8 col-lg-8 walkFormInput'>
-                        <input type='text' value={this.state.value} onChange={this.handleChange} />
+                        <input type='text' value={this.state.startValue} onChange={this.handleChange} />
                     </div>
-                    <input type='submit' value="Submit"/>
                 </div>
+                <div className='form-group row'>
+                    <label htmlFor='inputEnd' className='col-2 col-lg-2 walkFormLabel'>End *</label>
+                    <div className='col-8 col-lg-8 walkFormInput'>
+                        <input type='text' value={this.state.endValue} onChange={this.handleChange} />
+                    </div>
+                </div>
+                <input type='submit' value="Generate Route"/>
             </form>
         )
     }
