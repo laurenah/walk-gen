@@ -3,14 +3,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import config from './mapbox-key';
-import {process, convertToCoords} from './route-processor';
+import {process, convertToCoords} from './coord-processor';
+import {updateRoute} from './route';
 
 // API Key
 mapboxgl.accessToken = config;
-
-// MapMatching API Path
-//const matchPath = 'https://api.mapbox.com/maching/v5/mapbox/walking/';
-var distance = 3000; // meters to make route ?
 
 // Application Component - App base
 class Application extends React.Component {
@@ -30,7 +27,7 @@ class Map extends React.Component {
         this.state = {
             lng: 145,
             lat: -37.95,
-            zoom: 12
+            zoom: 14
         };
     }
 
@@ -91,28 +88,37 @@ class WalkForm extends React.Component {
 
         this.state = {
             startValue: '',
-            endValue: ''
+            distValue: 3
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleStartChange = this.handleStartChange.bind(this);
+        this.handleDistChange = this.handleDistChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    // sets value to whatever is in the textbox
-    handleChange(event) {
+    // sets start value to whatever is in the start textbox
+    handleStartChange(event) {
         this.setState({
-            startValue: event.target.startValue,
-            endValue: event.target.endValue
+            startValue: event.target.value,
+            distValue: this.state.distValue
+        });
+    }
+
+    // sets distance value to whatever is in the distance textbox
+    handleDistChange(event) {
+        this.setState({
+            startValue: this.state.startValue,
+            distValue: event.target.value
         });
     }
 
     // handles submit of form
     handleSubmit(event) {
-        console.log('Start: ' + this.state.startValue + ", End: " + this.state.endValue);
+        console.log('Start: ' + this.state.startValue + ", Distance: " + this.state.distValue);
 
-        let routeLegs = process(distance); // get splits
+        let routeLegs = process(this.state.distValue * 1000); // get splits
         routeLegs = convertToCoords(this.props.lat, this.props.lng, routeLegs);
-        console.log(routeLegs);
+        updateRoute(routeLegs, mapboxgl.accessToken);
 
         event.preventDefault();
     }
@@ -121,18 +127,21 @@ class WalkForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className='form-group row'>
-                    <label htmlFor='inputStart' className='col-2 col-lg-2 walkFormLabel'>Start</label>
-                    <div className='col-8 col-lg-8 walkFormInput'>
-                        <input type='text' value={this.state.startValue} onChange={this.handleChange} />
+                    <label htmlFor='inputStart' className='col-3 col-lg-3 walkFormLabel'>Start</label>
+                    <div className='col-9 col-lg-9 walkFormInput'>
+                        <input type='text' value={this.state.startValue} onChange={this.handleStartChange} />
                     </div>
                 </div>
                 <div className='form-group row'>
-                    <label htmlFor='inputEnd' className='col-2 col-lg-2 walkFormLabel'>End *</label>
-                    <div className='col-8 col-lg-8 walkFormInput'>
-                        <input type='text' value={this.state.endValue} onChange={this.handleChange} />
+                    <label htmlFor='inputDist' className='col-3 col-lg-3 walkFormLabel'>Distance</label>
+                    <div className='col-3 col-lg-3 walkFormDist'>
+                        <input type='text' value={this.state.distValue} onChange={this.handleDistChange} />
+                    </div>
+                    <div className="col-6 col-lg-6 km">
+                        <label>km</label>
                     </div>
                 </div>
-                <input type='submit' value="Generate Route"/>
+                <input className="routeBtn" type='submit' value="Generate Route"/>
             </form>
         )
     }
