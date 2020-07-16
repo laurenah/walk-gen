@@ -15,17 +15,18 @@ function generateRandoms(max, count) {
         max -= random;
     }
 
-    // shuffle the distances
+    // randomise the order distances
     shuffle(distances);
-    console.log(distances);
     return distances;
 }
 
 // convert distances to coordinates
 export function convertToCoords(lat, lng, distances) {
     let meterValue = 0.0000045625; // latitude equivalent of 1 meter
-    let coords = [];
+    let coords = []; // array to store coordinates
     for (let i = 0; i < distances.length; i++) {
+        // TO-DO: Insert logic here to randomise direction of splits
+
         let coordChange = parseFloat(lat) + parseFloat(distances[i] * meterValue); // add distance to latitude
         coords.push([lng, coordChange]); // creates 2D array
     }
@@ -47,6 +48,7 @@ export function convertToCoords(lat, lng, distances) {
     return featureCollection;
 }
 
+// Randomises a given array
 function shuffle(array) {
     var currentIndex = array.length,
         temporaryValue, randomIndex;
