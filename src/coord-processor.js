@@ -22,21 +22,45 @@ function generateRandoms(max, count) {
 
 // convert distances to coordinates
 export function convertToCoords(lat, lng, distances) {
-    let meterValue = 0.0000045625; // latitude equivalent of 1 meter
+    let latitude = lat;
+    let longitude = lng;
+    let meterValue = 0.000005; // latitudinal equivalent of 1 meter
     let coords = []; // array to store coordinates
+    let coordChange = 0;
+    coords.push([parseFloat(longitude), parseFloat(latitude)]); // push starting coords
     for (let i = 0; i < distances.length; i++) {
-        // TO-DO: Insert logic here to randomise direction of splits
-
-        let coordChange = parseFloat(lat) + parseFloat(distances[i] * meterValue); // add distance to latitude
-        coords.push([lng, coordChange]); // creates 2D array
+        // Pick if we're changing latitude or longitude
+        if (oneTwoThree() === 1) { // if 1, change latitude
+            if (oneOrTwo() === 1) { // if 1 again, positive change 
+                coordChange = parseFloat(latitude) + parseFloat(distances[i] * meterValue);
+                latitude = coordChange;
+            } else { // else, negative change
+                coordChange = parseFloat(latitude) - parseFloat(distances[i] * meterValue);
+                latitude = coordChange;
+            }
+            coords.push([parseFloat(longitude), coordChange]);
+        } else { // else, change longitude
+            if (oneOrTwo() === 1) { // if 1 again, positive change 
+                coordChange = parseFloat(longitude) + parseFloat(distances[i] * meterValue);
+                longitude = coordChange;
+            } else { // else, negative change
+                coordChange = parseFloat(longitude) - parseFloat(distances[i] * meterValue);
+                longitude = coordChange;
+            }
+            coords.push([coordChange, parseFloat(latitude)]);
+        }
     }
+
+    // finally, append the start point to the list to return home
+    coords.push([coords[0][0], coords[0][1]]);
+    console.log(coords);
 
     //convert 2d array into feature collection for mapbox
     let featureCollection = {
-        "type":"FeatureCollection",
+        "type": "FeatureCollection",
         "features": [{
             "id": "89901866fa244fb6644f2bd300c6e480",
-            "type":"Feature",
+            "type": "Feature",
             "properties": {},
             "geometry": {
                 "coordinates": coords,
@@ -46,6 +70,16 @@ export function convertToCoords(lat, lng, distances) {
     }
 
     return featureCollection;
+}
+
+// returns 1, 2, or 3
+function oneTwoThree() {
+    return Math.floor(Math.random() * (3 - 1)) + 1;
+}
+
+// returns 1 or 2
+function oneOrTwo() {
+    return Math.floor(Math.random() * (2 - 1)) + 1;
 }
 
 // Randomises a given array
