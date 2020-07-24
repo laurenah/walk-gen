@@ -1,7 +1,8 @@
+// Imports
 import React, {Component} from 'react';
-import {map} from './index'; // map object
-import {process, convertToCoords} from './coord-processor'; // functions for processing lat/lng
-import config from './mapbox-key'; // externally stored mapbox API token
+import {map} from './Map'; // map object
+import {process, convertToCoords} from '../coord-processor'; // functions for processing lat/lng
+import config from '../mapbox-key'; // externally stored mapbox API token
 import mapboxgl from 'mapbox-gl';
 
 // access API Key
