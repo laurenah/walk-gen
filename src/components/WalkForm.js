@@ -4,6 +4,7 @@ import {map} from './Map'; // map object
 import {process, convertToCoords} from '../coord-processor'; // functions for processing lat/lng
 import config from '../mapbox-key'; // externally stored mapbox API token
 import mapboxgl from 'mapbox-gl';
+import Geocoder from 'react-geocoder-autocomplete';
 
 // access API Key
 mapboxgl.accessToken = config;
@@ -45,7 +46,7 @@ class WalkForm extends Component {
         let routeLegs = process(this.state.distValue * 1000); // get splits
         routeLegs = convertToCoords(this.props.lat, this.props.lng, routeLegs); // convert splits to coordinates
         updateRoute(routeLegs, mapboxgl.accessToken); // get a drawable route from the coords
-        event.preventDefault();
+        //event.preventDefault();
     }
 
     render() {
@@ -54,19 +55,23 @@ class WalkForm extends Component {
                 <div className='form-group row'>
                     <label htmlFor='inputStart' className='col-3 col-lg-3 walkFormLabel'>Start</label>
                     <div className='col-9 col-lg-9 walkFormInput'>
-                        <input type='text' value={this.state.startValue} onChange={this.handleStartChange} />
+                        <Geocoder
+                            accessToken = {mapboxgl.accessToken}
+                            onChange = {this.handleStartChange}
+                            onSelect = {this.handleSubmit}
+                            value = {this.state.startValue}
+                        />
                     </div>
                 </div>
                 <div className='form-group row'>
-                    <label htmlFor='inputDist' className='col-3 col-lg-3 walkFormLabel'>Distance</label>
+                    <label htmlFor='inputDist' className='col-3 col-lg-3 walkFormLabel dist'>Distance</label>
                     <div className='col-3 col-lg-3 walkFormDist'>
                         <input type='text' value={this.state.distValue} onChange={this.handleDistChange} />
                     </div>
-                    <div className="col-6 col-lg-6 km">
-                        <label>km</label>
+                    <div className="col-6 col-lg-6">
+                        <input className="routeBtn" type='submit' value="Generate Route"/>
                     </div>
                 </div>
-                <input className="routeBtn" type='submit' value="Generate Route"/>
             </form>
         )
     }
